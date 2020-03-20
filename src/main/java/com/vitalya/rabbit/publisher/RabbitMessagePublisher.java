@@ -1,8 +1,6 @@
 package com.vitalya.rabbit.publisher;
 
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.Connection;
-import com.rabbitmq.client.ConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,20 +8,17 @@ public class RabbitMessagePublisher {
 
     private static final Logger logger = LoggerFactory.getLogger(RabbitMessagePublisher.class);
 
-    private final ConnectionFactory connectionFactory;
+    private final Channel channel;
 
-    public RabbitMessagePublisher(ConnectionFactory connectionFactory) {
-        this.connectionFactory = connectionFactory;
+    public RabbitMessagePublisher(Channel channel) {
+        this.channel = channel;
     }
 
     public void publishMessage(String message, String queueName) {
-
-        try (Connection connection = connectionFactory.newConnection();
-             Channel channel = connection.createChannel()) {
-
+        try {
             channel.queueDeclare(queueName, false, false, false, null);
             channel.basicPublish("", queueName, null, message.getBytes());
-
+            logger.info("Message {} pushed into queue {}", message, queueName);
         } catch (Exception e) {
             logger.error(e.getMessage());
         }

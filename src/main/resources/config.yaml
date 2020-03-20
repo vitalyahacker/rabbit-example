@@ -1,0 +1,7 @@
+host:
+  reindeer-01.rmq.cloudamqp.com
+virtualHost:
+  beobiycx
+login:
+  beobiycx
+password:
